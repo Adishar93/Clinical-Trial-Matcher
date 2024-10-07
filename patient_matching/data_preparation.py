@@ -1,8 +1,18 @@
 import pandas as pd
 from datetime import datetime
 
-# matching_algorithm/data_preparation.py
 def load_and_process_patient_data(file_path):
+    """
+    Works on the patient csvs loaded in data folder, this function processes the multiple csvs and returns a merged dataframe
+
+    Args:
+        file_path (string): Path to the folder containing the patient data CSV files.
+        
+
+    Returns:
+        dataframe: A dataframe containing required data for our usecase
+
+    """
     # Load patients.csv
     patients = pd.read_csv(file_path + 'patients.csv')
 

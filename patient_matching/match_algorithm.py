@@ -3,6 +3,20 @@ import json
 import re
 
 def match_patients_to_trials(patient_csv_path, trial_csv_path, output_json_path='matched_patients.json'):
+    """
+    Matches patients to clinical trials based on eligibility criteria. This function uses traditional rule-based matching.
+    It has very simple implementation to demonstrate the concept of matching patients to clinical trials. You can run these rules for large data (Millions of records) as well.
+    it writes the output to a JSON file.
+
+    Args:
+        patient_csv_path (str): The file path to the CSV containing processed patient data.
+        trial_csv_path (str): The file path to the CSV containing clinical trial data.
+        output_json_path (str): The file path where the output JSON file will be saved.
+
+    Returns:
+        None
+
+    """
     # Load patient data
     patients = pd.read_csv(patient_csv_path)
     # Load clinical trial data

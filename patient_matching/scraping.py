@@ -138,6 +138,17 @@ def extract_trial_info(driver, page_limit = 10):
     return trial_data
 
 def scrape_clinical_trials(page_limit):
+    """
+    Scrapes clinical trial data from ClinicalTrials.gov using Selenium and BeautifulSoup.
+
+    Args:
+        page_limit (int): Limit on how many pages to scrape on the clinicaltrials.gov website
+        
+
+    Returns:
+        trial_data(list(dict)): A list of dictionary with trial data
+
+    """
     url = "https://clinicaltrials.gov/search?aggFilters=status:rec"
     driver = setup_driver()
     driver.get(url)

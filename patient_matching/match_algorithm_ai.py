@@ -5,6 +5,21 @@ import re
 
 
 def match_patients_to_trials_ai(patient_csv_path, trial_csv_path, output_json_path='../output/matched_patients_ai.json'):
+    """
+    Matches patients to clinical trials based on eligibility criteria. This function uses ai based matching.
+    It currently uses OpenAI gpt-40-mini model and because the tokens are cost sensitive, it uses limits and offsets to process
+    the data to demonstrate its capability with small sample of data.
+    it writes the output to a JSON file.
+
+    Args:
+        patient_csv_path (str): The file path to the CSV containing processed patient data.
+        trial_csv_path (str): The file path to the CSV containing clinical trial data.
+        output_json_path (str): The file path where the output JSON file will be saved.
+
+    Returns:
+        None
+
+    """
     # Set your OpenAI API key
     openai.api_key = 'sk-XXXXXXXX'
 
