@@ -1,5 +1,3 @@
-# matching_algorithm/match_algorithm.py
-
 import pandas as pd
 import json
 import re
@@ -36,23 +34,22 @@ def match_patients_to_trials(patient_csv_path, trial_csv_path, output_json_path=
             return True
         return (gender == 'M' and 'Male' in sex_criteria) or (gender == 'F' and 'Female' in sex_criteria)
 
-    # Function to check condition eligibility
-    def is_condition_eligible(conditions, inclusion_criteria, exclusion_criteria):
-        # Split conditions into a set for easier checking
-        included_conditions = set(inclusion_criteria.split(' - '))
-        excluded_conditions = set(exclusion_criteria.split(' - ')) if exclusion_criteria else set()
+    # Function to check inclusion and exclusion criteria
+    def check_inclusion_exclusion(patient_conditions, inclusion_criteria, exclusion_criteria):
+        patient_conditions = set(patient_conditions.split(' - ')) if pd.notna(patient_conditions) else set()
+        included_conditions = set(inclusion_criteria.split(' - ')) if pd.notna(inclusion_criteria) else set()
+        excluded_conditions = set(exclusion_criteria.split(' - ')) if pd.notna(exclusion_criteria) else set()
 
-        # Check inclusion and exclusion
-        patient_conditions = set(conditions.split(' - '))
         met_criteria = []
-        
+
         # Check inclusion criteria
         if not included_conditions.isdisjoint(patient_conditions):
             met_criteria.append("Inclusion criteria met")
+        
         # Check exclusion criteria
         if excluded_conditions.isdisjoint(patient_conditions):
             met_criteria.append("No exclusion criteria matched")
-        
+
         return met_criteria
 
     # Create a list to hold patient matches
@@ -63,12 +60,19 @@ def match_patients_to_trials(patient_csv_path, trial_csv_path, output_json_path=
         eligible_trials = []
         for _, trial in trials.iterrows():
             criteria_met = []
-            
+            age_eligible = is_age_eligible(patient['AGE'], trial['age_criteria'])
+            gender_eligible = is_gender_eligible(patient['GENDER'], trial['sex_criteria'])
+
             # Check eligibility
-            if (is_age_eligible(patient['AGE'], trial['age_criteria']) and
-                is_gender_eligible(patient['GENDER'], trial['sex_criteria'])):
-                # Get the criteria met
-                criteria_met = is_condition_eligible(patient['CONDITIONS'], trial['inclusionCriteria'], trial['exclusionCriteria'])
+            if age_eligible and gender_eligible:
+                criteria_met.append("Age criteria met")
+                criteria_met.append("Gender criteria met")
+                
+                # Get the criteria met for conditions
+                condition_met = check_inclusion_exclusion(patient['CONDITIONS'], trial['inclusionCriteria'], trial['exclusionCriteria'])
+                criteria_met.extend(condition_met)
+                
+                # Add the trial if any criteria are met
                 if criteria_met:
                     eligible_trials.append({
                         "trialId": trial['trialId'],

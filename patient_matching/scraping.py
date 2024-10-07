@@ -18,9 +18,9 @@ def safe_get_text(soup_element, default_value="NA"):
     """ Safely extracts text from a BeautifulSoup element, returns default_value if None """
     return soup_element.get_text().strip() if soup_element else default_value
 
-def extract_trial_info(driver):
+def extract_trial_info(driver, page_limit = 10):
     trial_data = []
-    page_limit = 1
+    
     curr_page = 0
 
     while True:
@@ -124,6 +124,7 @@ def extract_trial_info(driver):
                 continue  # Skip trial if an error occurs
 
         curr_page += 1
+        print("Page ", str(curr_page), ": Completed!")
         if curr_page == page_limit:
             break
 
@@ -136,13 +137,13 @@ def extract_trial_info(driver):
 
     return trial_data
 
-def scrape_clinical_trials():
+def scrape_clinical_trials(page_limit):
     url = "https://clinicaltrials.gov/search?aggFilters=status:rec"
     driver = setup_driver()
     driver.get(url)
 
     # Extract all trial information across multiple pages
-    trial_data = extract_trial_info(driver)
+    trial_data = extract_trial_info(driver, page_limit)
 
     # Close the driver
     driver.quit()
